@@ -9,22 +9,22 @@ app.use(express.json())
 
 
 app.get("/", async (req, res) => {
-    try{
-        const users:Array<userShema> = await User.find();
+    try {
+        const users: Array<userShema> = await User.find();
         res.json(users);
-    }catch(err){
-        res.status(500).json({message: 'no users found'})
+    } catch (err) {
+        res.status(500).json({ message: 'no users found' })
     }
 });
 
 
-app.get("/users/:id", 
+app.get("/users/:id",
     async (req, res) => {
-        try{
+        try {
             const user = await User.findById(req.params.id);
             res.json(user);
-        }catch(err){
-            res.status(500).json({message: 'no user found'})
+        } catch (err) {
+            res.status(500).json({ message: 'no user found' })
         }
     }
 );
@@ -37,15 +37,29 @@ app.post('/users', async (req, res) => {
         password: req.body.password
     });
 
-    try{
+    try {
         const newUser = await user.save();
         res.json(newUser);
-    }catch(err){
-        res.status(500).json({message: 'user not created'})
+    } catch (err) {
+        res.status(500).json({ message: 'user not created' })
     }
-}
-);
+});
 
+
+app.put('/users/:id', async (req, res) => {
+    try {
+        const user = await User.findById(req.params.id);
+        if (user) {
+            user.name = req.body.name;
+            user.email = req.body.email;
+            user.password = req.body.password;
+            const updatedUser = await user.save();
+            res.json(updatedUser);
+        }
+    } catch (err) {
+        res.status(500).json({ message: 'user not updated' })
+    }
+})
 
 
 const port = process.env.PORT || 3000
