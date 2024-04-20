@@ -61,6 +61,20 @@ app.put('/users/:id', async (req, res) => {
     }
 })
 
+app.delete('/users/:id', async (req, res) => {
+    try {
+        const user = await User.findById(req.params.id);
+        if (user) {
+            
+            await user.remove();
+            res.json({ message: 'user removed' });
+        }
+    } catch (err) {
+        res.status(500).json({ message: 'user not removed' })
+    }
+}
+
+
 
 const port = process.env.PORT || 3000
 const host = process.env.HOST
