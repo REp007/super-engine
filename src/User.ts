@@ -1,14 +1,13 @@
-import mongoose from "mongoose"
+import mongoose, {Schema} from "mongoose"
+import type { User as userShema } from "../types/interfaces"
+import dotenv from "dotenv";
+dotenv.config();
 
-mongoose.connect("mongodb://127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+2.0.0")
+mongoose.connect(process.env.MONGO_URI!)
     .then(() => console.log("Connected to MongoDB"))
     .catch((err) => console.log(err))
 
-const userSchema = new mongoose.Schema({
-    name: String,
-    email: String,
-    password: String
-});
+const userSchema = new Schema<userShema>({});
 
 const User = mongoose.model("User", userSchema);
 
