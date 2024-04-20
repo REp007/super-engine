@@ -1,7 +1,19 @@
 import mongoose from "mongoose"
 import express from "express"
+import User from "./User"
+import type { User as userShema } from "../types/interfaces"
 
 const app = express()
+
+
+app.get("/", async (req, res) => {
+    try{
+        const users:Array<userShema> = await User.find();
+        res.json(users);
+    }catch(err){
+        res.status(500).json({message: 'no users found'})
+    }
+});
 
 
 
