@@ -8,7 +8,7 @@ app.use(express.json())
 
 
 
-app.get("/", async (req, res) => {
+app.get("/users", async (req, res) => {
     try {
         const users: Array<userShema> = await User.find();
         res.json(users);
