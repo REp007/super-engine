@@ -65,7 +65,7 @@ app.delete('/users/:id', async (req, res) => {
     try {
         const user = await User.findById(req.params.id);
         if (user) {
-            
+
             await user.remove();
             res.json({ message: 'user removed' });
         }
@@ -73,6 +73,7 @@ app.delete('/users/:id', async (req, res) => {
         res.status(500).json({ message: 'user not removed' })
     }
 }
+);
 
 
 
