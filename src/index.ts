@@ -1,10 +1,10 @@
-import mongoose from "mongoose"
 import express from "express"
 import User from "./User"
 import type { User as userShema } from "../types/interfaces"
 
 import swaggerJSDoc from "swagger-jsdoc";
 import SwaggerUi from "swagger-ui-express";
+import logger from './logger';
 
 const port = process.env.PORT || 3000
 const host = process.env.HOST
@@ -68,8 +68,10 @@ app.get("/users", async (req, res) => {
     try {
         const users: Array<userShema> = await User.find();
         res.json(users);
+        logger.info('Users retrieved successfully');
     } catch (err) {
         res.status(500).json({ message: 'no users found' })
+        logger.error('no users');
     }
 });
 
@@ -101,8 +103,10 @@ app.get("/users/:id",
         try {
             const user = await User.findById(req.params.id);
             res.json(user);
+            logger.info('user exists');
         } catch (err) {
             res.status(500).json({ message: 'no user found' })
+            logger.error('no user found');
         }
     }
 );
@@ -139,8 +143,10 @@ app.post('/users', async (req, res) => {
     try {
         const newUser = await user.save();
         res.json(newUser);
+        logger.info('user created succefully')
     } catch (err) {
         res.status(500).json({ message: 'user not created' })
+        logger.error('user not created')
     }
 });
 
@@ -182,9 +188,11 @@ app.put('/users/:id', async (req, res) => {
             user.password = req.body.password;
             const updatedUser = await user.save();
             res.json(updatedUser);
+            logger.info('user was updated successflu')
         }
     } catch (err) {
         res.status(500).json({ message: 'user not updated' })
+        logger.error('user not updated')
     }
 })
 /**
@@ -221,9 +229,11 @@ app.delete('/users/:id', async (req, res) => {
 
             await user.deleteOne();
             res.json({ message: 'user removed' });
+            logger.info('user removed')
         }
     } catch (err) {
         res.status(500).json({ message: 'user not removed' })
+        logger.error('user not removed');
     }
 }
 );
@@ -231,7 +241,7 @@ app.delete('/users/:id', async (req, res) => {
 
 
 const swaggerDocs = swaggerJSDoc(swaggerOptions);
-console.log(swaggerDocs); // Check the content of swaggerDocs
+// console.log(swaggerDocs); // Check the content of swaggerDocs
 
 app.use('/api-docs', SwaggerUi.serve, SwaggerUi.setup(swaggerDocs));
 
