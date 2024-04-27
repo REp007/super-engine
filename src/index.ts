@@ -70,7 +70,9 @@ app.get("/users", async (req, res) => {
         res.json(users);
         logger.info('Users retrieved successfully');
     } catch (err) {
-        res.status(500).json({ message: 'no users found' })
+        res.status(500).json({ 
+            status: res.statusCode,
+            message: 'no users found',})
         logger.error('no users');
     }
 });
@@ -105,7 +107,10 @@ app.get("/users/:id",
             res.json(user);
             logger.info('user exists');
         } catch (err) {
-            res.status(500).json({ message: 'no user found' })
+            res.status(500).json({ 
+                status: res.statusCode,
+                message: 'no user found' 
+            })
             logger.error('no user found');
         }
     }
@@ -145,7 +150,9 @@ app.post('/users', async (req, res) => {
         res.json(newUser);
         logger.info('user created succefully')
     } catch (err) {
-        res.status(500).json({ message: 'user not created' })
+        res.status(500).json({ 
+            status: res.statusCode,
+            message: 'user not created' })
         logger.error('user not created')
     }
 });
@@ -191,7 +198,9 @@ app.put('/users/:id', async (req, res) => {
             logger.info('user was updated successflu')
         }
     } catch (err) {
-        res.status(500).json({ message: 'user not updated' })
+        res.status(500).json({ 
+            status: res.statusCode,
+            message: 'user not updated' })
         logger.error('user not updated')
     }
 })
@@ -228,7 +237,9 @@ app.delete('/users/:id', async (req, res) => {
         if (user) {
 
             await user.deleteOne();
-            res.json({ message: 'user removed' });
+            res.json({ 
+                status: res.statusCode,
+                message: 'user removed' });
             logger.info('user removed')
         }
     } catch (err) {
