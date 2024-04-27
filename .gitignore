@@ -178,4 +178,4 @@ dist
 file.txt
 
 # ignore logs
-*.log
+/log/*
