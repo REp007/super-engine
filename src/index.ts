@@ -5,13 +5,22 @@ import type { User as userShema } from "../types/interfaces"
 import swaggerJSDoc from "swagger-jsdoc";
 import SwaggerUi from "swagger-ui-express";
 import logger from './logger';
+import expressWinston from 'express-winston';
 
 const port = process.env.PORT || 3000
 const host = process.env.HOST
 
 const app = express()
 app.use(express.json())
-
+app.use(expressWinston.logger({
+    winstonInstance: logger,
+    statusLevels: true,
+    meta: false,
+    colorize: true,
+    msg(req, res) {
+        return `Method: ${req.method} | URL: ${req.url} | Status: ${res.statusCode}`
+    }
+}))
 
 const swaggerOptions = {
     definition: {
@@ -68,12 +77,10 @@ app.get("/users", async (req, res) => {
     try {
         const users: Array<userShema> = await User.find();
         res.json(users);
-        logger.info('Users retrieved successfully');
     } catch (err) {
         res.status(500).json({ 
             status: res.statusCode,
             message: 'no users found',})
-        logger.error('no users');
     }
 });
 
@@ -105,13 +112,11 @@ app.get("/users/:id",
         try {
             const user = await User.findById(req.params.id);
             res.json(user);
-            logger.info('user exists');
         } catch (err) {
             res.status(500).json({ 
                 status: res.statusCode,
                 message: 'no user found' 
-            })
-            logger.error('no user found');
+            });
         }
     }
 );
@@ -148,12 +153,10 @@ app.post('/users', async (req, res) => {
     try {
         const newUser = await user.save();
         res.json(newUser);
-        logger.info('user created succefully')
     } catch (err) {
         res.status(500).json({ 
             status: res.statusCode,
-            message: 'user not created' })
-        logger.error('user not created')
+            message: 'user not created' });
     }
 });
 
@@ -195,13 +198,11 @@ app.put('/users/:id', async (req, res) => {
             user.password = req.body.password;
             const updatedUser = await user.save();
             res.json(updatedUser);
-            logger.info('user was updated successflu')
         }
     } catch (err) {
         res.status(500).json({ 
             status: res.statusCode,
             message: 'user not updated' })
-        logger.error('user not updated')
     }
 })
 /**
@@ -240,11 +241,9 @@ app.delete('/users/:id', async (req, res) => {
             res.json({ 
                 status: res.statusCode,
                 message: 'user removed' });
-            logger.info('user removed')
         }
     } catch (err) {
-        res.status(500).json({ message: 'user not removed' })
-        logger.error('user not removed');
+        res.status(500).json({ message: 'user not removed' });
     }
 }
 );
