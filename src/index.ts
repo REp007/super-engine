@@ -28,11 +28,15 @@ const swaggerOptions = {
         info: {
             title: 'My API',
             version: '1.0.0',
-            description: 'A sample API for learning Swagger',
+            description: `Simple REST APIs for`,
+            contact: {
+                email: 'elamraniy292@gmail.com',
+            }
         },
         servers: [
             {
                 url: `${host}:${port}`,
+                description: 'main production server'
             },
         ],
         components: {
@@ -50,29 +54,15 @@ const swaggerOptions = {
             }
         }
     },
-    apis: ['./src/*.ts'],
+    tags: {
+        name: 'users',
+        description: 'all endpoints about this model'
+    },
+    apis: ['./swagger.yaml'],
 };
 
 
 
-/**
- * @openapi
- * /users:
- *   get:
- *     summary: Retrieve all users
- *     description: Get a list of all users.
- *     responses:
- *       '200':
- *         description: A successful response
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/User'
- *       '500':
- *         description: Internal Server Error
- */
 app.get("/users", async (req, res) => {
     try {
         const users: Array<userShema> = await User.find();
@@ -84,29 +74,6 @@ app.get("/users", async (req, res) => {
     }
 });
 
-/**
- * @openapi
- * /users/{id}:
- *   get:
- *     summary: Retrieve a single user by ID
- *     description: Get a single user by their ID.
- *     parameters:
- *       - in: path
- *         name: id
- *         schema:
- *           type: string
- *         required: true
- *         description: The ID of the user to retrieve.
- *     responses:
- *       '200':
- *         description: A successful response
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/User'
- *       '500':
- *         description: Internal Server Error
- */
 app.get("/users/:id",
     async (req, res) => {
         try {
@@ -121,28 +88,6 @@ app.get("/users/:id",
     }
 );
 
-/**
- * @openapi
- * /users:
- *   post:
- *     summary: Create a new user
- *     description: Create a new user with the provided name, email, and password.
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/User'
- *     responses:
- *       '200':
- *         description: A successful response
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/User'
- *       '500':
- *         description: Internal Server Error
- */
 app.post('/users', async (req, res) => {
     const user = new User({
         name: req.body.name,
@@ -160,35 +105,6 @@ app.post('/users', async (req, res) => {
     }
 });
 
-/**
- * @openapi
- * /users/{id}:
- *   put:
- *     summary: Update an existing user
- *     description: Update an existing user's name, email, and password.
- *     parameters:
- *       - in: path
- *         name: id
- *         schema:
- *           type: string
- *         required: true
- *         description: The ID of the user to update.
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/User'
- *     responses:
- *       '200':
- *         description: A successful response
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/User'
- *       '500':
- *         description: Internal Server Error
- */
 app.put('/users/:id', async (req, res) => {
     try {
         const user = await User.findById(req.params.id);
@@ -205,33 +121,7 @@ app.put('/users/:id', async (req, res) => {
             message: 'user not updated' })
     }
 })
-/**
- * @openapi
- * /users/{id}:
- *   delete:
- *     summary: Delete a user
- *     description: Delete a user by their ID.
- *     parameters:
- *       - in: path
- *         name: id
- *         schema:
- *           type: string
- *         required: true
- *         description: The ID of the user to delete.
- *     responses:
- *       '200':
- *         description: A successful response
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   description: Indicates the success of the operation.
- *       '500':
- *         description: Internal Server Error
- */
+
 app.delete('/users/:id', async (req, res) => {
     try {
         const user = await User.findById(req.params.id);
